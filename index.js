@@ -5,7 +5,9 @@ const app = express();
 const port = 3000;
 
 require('dotenv').config();
-const atlasUrI = process.env.ATLAS_URI
+const atlasUrI = process.env.ATLAS_URI;
+//Import user model
+const User = require('./models/User');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -26,6 +28,14 @@ mongoose
 app.get('/', (req, res) => {
     res.send('Hello, World!');
 });
+
+//CRUD Operations Routes
+//POST /register
+
+//POST /login
+//GET /users
+//PUT /users/:id
+//DELETE /users/:id
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
