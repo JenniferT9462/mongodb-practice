@@ -10,9 +10,13 @@ const atlasUrI = process.env.ATLAS_URI;
 //Use jwt secret key
 const secretKey = process.env.JWT_SECRET;
 const secretKeyExpires = process.env.JWT_EXPIRES_IN;
-console.log(secretKey)
+
 //Import user model
 const User = require('./models/User');
+//Import auth middleware
+const auth = require('./middleware/auth');
+//Import checkRole middleware
+const checkRole = require('./middleware/role');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -117,10 +121,16 @@ app.delete('/users/:id', async (req, res) => {
     res.json(result)
 });
 
+//Protected route 'auth'
 app.get('/dashboard', auth, (req, res) => {
     res.json({
         message: "This is the Dashboard!"
     })
+});
+
+//Protected route 'role'
+app.get('/admin', auth, checkRole("admin"), (req, res) => {
+    res.status(200).json({ message: "This is the Admin Panel."})
 })
 
 app.listen(port, () => {
