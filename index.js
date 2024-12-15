@@ -100,8 +100,16 @@ app.post("/login", async (req, res) => {
 app.get('/users', async (req, res) => {
     let allUsers = await User.find({});
     res.json(allUsers);
-})
+});
+
 //PUT /users/:id
+app.put('/users/:id', async (req, res) => {
+    const query = { _id: req.params.id };
+    const updates = req.body;
+    let result = await User.updateOne(query, updates);
+    res.json(result)
+})
+
 //DELETE /users/:id
 
 app.listen(port, () => {
