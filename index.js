@@ -111,6 +111,11 @@ app.put('/users/:id', async (req, res) => {
 })
 
 //DELETE /users/:id
+app.delete('/users/:id', async (req, res) => {
+    const query = { _id: req.params.id };
+    let result = await User.deleteOne(query);
+    res.json(result)
+})
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
