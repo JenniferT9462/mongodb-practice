@@ -31,7 +31,28 @@ app.get('/', (req, res) => {
 
 //CRUD Operations Routes
 //POST /register
+app.post('/register', async (req, res) => {
+    // Extract the request body containing the user data
+    const data = req.body;
+    // Create a new User instance with the provided data
+    const user = new User({
+        name: data.name,
+        email: data.email,
+        password: data.password,
+        role: data.role
+    });
 
+    try {
+        // Save the user data to the database
+        const savedUser = await user.save();
+        console.log(savedUser);
+        // Send the saved user data as a JSON response
+        res.json(savedUser);
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ error: "Failed to save user" });
+    }
+})
 //POST /login
 //GET /users
 //PUT /users/:id
