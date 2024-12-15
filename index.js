@@ -1,11 +1,16 @@
 // index.js
 const express = require('express');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 const app = express();
 const port = 3000;
 
 require('dotenv').config();
 const atlasUrI = process.env.ATLAS_URI;
+//Use jwt secret key
+const secretKey = process.env.JWT_SECRET;
+const secretKeyExpires = process.env.JWT_EXPIRES_IN;
+console.log(secretKey)
 //Import user model
 const User = require('./models/User');
 
@@ -54,6 +59,43 @@ app.post('/register', async (req, res) => {
     }
 })
 //POST /login
+//Login Route
+app.post("/login", async (req, res) => {
+    // Extract email and password from request body
+    const { email, password } = req.body;
+
+    try {
+        // Step 1: Find the user by email
+        const user = await User.findOne({ email });
+        //If not user send error
+        if (!user) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+
+        // Step 2: Compare provided password with the hashed password
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return res.status(401).json({ error: "Invalid email or password" });
+        }
+
+        // Step 3: Generate a JWT token
+        const token = jwt.sign(
+            { id: user._id, email: user.email, role: user.role },
+            // Secret key for signing 
+            secretKey, 
+            // Token expiration
+            { expiresIn: secretKeyExpires }
+        );
+        // Step 4: Send response with the token
+        res.status(200).json({ message: "Login successful", token });
+    } catch (error) {
+        // Log the error for debugging
+        console.error(error);
+        // Return a server error
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
 //GET /users
 //PUT /users/:id
 //DELETE /users/:id
