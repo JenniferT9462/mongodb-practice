@@ -115,6 +115,12 @@ app.delete('/users/:id', async (req, res) => {
     const query = { _id: req.params.id };
     let result = await User.deleteOne(query);
     res.json(result)
+});
+
+app.get('/dashboard', auth, (req, res) => {
+    res.json({
+        message: "This is the Dashboard!"
+    })
 })
 
 app.listen(port, () => {
