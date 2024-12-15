@@ -97,6 +97,10 @@ app.post("/login", async (req, res) => {
 });
 
 //GET /users
+app.get('/users', async (req, res) => {
+    let allUsers = await User.find({});
+    res.json(allUsers);
+})
 //PUT /users/:id
 //DELETE /users/:id
 
